@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:AgroVision/common/page_default.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:AgroVision/screen/result_ia_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,6 +22,13 @@ class _TirarFotoFPageState extends State<TirarFotoFPage> {
       setState(() {
         _image = File(pickedFile.path);
       });
+
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ApiScreen(
+                image: _image,
+              )));
     }
   }
 
@@ -32,6 +39,13 @@ class _TirarFotoFPageState extends State<TirarFotoFPage> {
       setState(() {
         _image = File(pickedFile.path);
       });
+
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ApiScreen(
+                    image: _image,
+                  )));
     }
   }
 
@@ -93,7 +107,8 @@ class _TirarFotoFPageState extends State<TirarFotoFPage> {
 
               const SizedBox(height: 50),
               GestureDetector(
-                onTap: _pickImageFromGallery, // Adiciona a função para abrir a galeria
+                onTap: _pickImageFromGallery,
+                // Adiciona a função para abrir a galeria
                 child: Column(
                   children: [
                     Transform.translate(
@@ -105,7 +120,8 @@ class _TirarFotoFPageState extends State<TirarFotoFPage> {
                         ),
                         child: Padding(
                           padding: EdgeInsets.all(15),
-                          child: Icon(Icons.image_outlined, size: 100, color: Colors.black),
+                          child: Icon(Icons.image_outlined,
+                              size: 100, color: Colors.black),
                         ),
                       ),
                     ),

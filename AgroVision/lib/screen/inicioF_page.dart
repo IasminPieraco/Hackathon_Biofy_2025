@@ -1,15 +1,16 @@
+import 'package:AgroVision/screen/chat_page.dart';
 import 'package:AgroVision/screen/tirar_fotoF_page.dart';
 import 'package:flutter/material.dart';
 import 'package:AgroVision/common/page_default.dart';
+
+import 'loc_mapa_page.dart';
 
 class InicioFPage extends StatelessWidget {
   const InicioFPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFF0A8A13),
-      body: Center(
+    return PageDefault(child: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -41,7 +42,10 @@ class InicioFPage extends StatelessWidget {
                 icon: Icons.chat,
                 label: 'Chat com Agrônomo',
                 onPressed: () {
-                  // Ação para o chat com agrônomo
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ChatScreen()),
+                  );
                 },
               ),
               const SizedBox(height: 15),
@@ -49,9 +53,20 @@ class InicioFPage extends StatelessWidget {
                 icon: Icons.camera_alt,
                 label: 'Monitoramento por câmera',
                 onPressed: () {
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => TirarFotoFPage()),
+                  );
+                },
+              ),
+              const SizedBox(height: 15),
+              _buildButton(
+                  icon: Icons.map,
+                  label: 'Localização do Lote',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const DetalhesLotePage()),
                   );
                 },
               ),

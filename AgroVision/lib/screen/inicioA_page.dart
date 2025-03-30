@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:AgroVision/common/page_default.dart';
+import 'Informacoes_lote_page.dart';
+import 'banco_Imagens_page.dart';
+import 'chat_page.dart';
 
 class InicioAPage extends StatelessWidget {
   const InicioAPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFF0A8A13),
-      body: Center(
+    return PageDefault(child:  Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -40,24 +41,33 @@ class InicioAPage extends StatelessWidget {
                 icon: Icons.chat,
                 label: 'Chat com Fazendeiro',
                 onPressed: () {
-                  // Ação para o chat com fazendeiro
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ChatScreen()),
+                  );
                 },
               ),
               const SizedBox(height: 15),
               _buildButton(
                 icon: Icons.image,
                 label: 'Banco de Imagens',
-                onPressed: () {
-                  // Banco de Imagens
+                  onPressed: () {
+                   Navigator.push(
+                    context,
+                     MaterialPageRoute(builder: (context) => const BancoDeImagensPage()),
+                  );
                 },
               ),
               const SizedBox(height: 15),
               _buildButton(
                 icon: Icons.map,
                 label: 'Informações do Lote',
-                onPressed: () {
-                  // Informações do Lote
-                },
+                  onPressed: () {
+                   Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MapaLotePage()),
+                );
+               }
               ),
               Spacer(), // Empurra os botões para o final da tela
               Row(

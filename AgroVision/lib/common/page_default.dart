@@ -8,10 +8,15 @@ class PageDefault extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('AgroVision'),
+        centerTitle: true,
+        backgroundColor: Color(0xFF0A8A13),
+        foregroundColor: Colors.white,
+      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        padding:const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           color: Color(0xFF0A8A13)
         ),

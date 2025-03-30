@@ -5,6 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:AgroVision/screen/cadastro_page.dart';
 import 'package:AgroVision/screen/inicioF_page.dart';
 import 'package:AgroVision/screen/inicioA_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+
 
 
 
@@ -167,16 +170,54 @@ class LoginPage extends HookConsumerWidget {
 
                 // Botão de Login
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content:
-                          Text('Login realizado para ${state.email}'),
-                        ),
+                      final prefs = await SharedPreferences.getInstance();
+                      final String? usersString = prefs.getString('usuarios');
+
+                      if (usersString == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Nenhum usuário cadastrado!')),
+                        );
+                        return;
+                      }
+
+                      List<dynamic> users = jsonDecode(usersString);
+
+                      // Verifica se o email e senha correspondem a algum usuário cadastrado
+                      final user = users.firstWhere(
+                            (u) => u['email'] == state.email && u['senha'] == state.password,
+                        orElse: () => null,
                       );
+
+
+
+                      if (user != null) {
+                        prefs.setString("email", state.email);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Login realizado com sucesso!')),
+                        );
+
+                        // Redireciona para a página correta
+                        if (user['tipoUsuario'] == 'fazendeiro') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => InicioFPage()),
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => InicioAPage()),
+                          );
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Email ou senha incorretos!')),
+                        );
+                      }
                     }
                   },
+
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black,
