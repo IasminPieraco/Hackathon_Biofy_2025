@@ -1,5 +1,5 @@
 import numpy as np
-import Clima
+from clima import Clima, setClima
 
 class IA:
     def __init__(self, entradas, ocultas, saidas, taxa_aprendizado=0.01):
@@ -47,7 +47,7 @@ class IA:
         self.bias_oculta += gradiente_oculta
     
     def prever(self, endereco):
-        clima = Clima.setClima(endereco)
+        clima = setClima(endereco)
 
         entrada = [[clima.temp_min[0]], [clima.temp_min[1]], [clima.temp_min[2]], [clima.temp_min[3]], [clima.temp_min[4]], 
                    [clima.temp_max[0]], [clima.temp_max[1]], [clima.temp_max[2]], [clima.temp_max[3]], [clima.temp_max[4]],

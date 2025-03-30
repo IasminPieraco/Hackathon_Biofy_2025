@@ -1,6 +1,6 @@
 import requests
 
-class clima:
+class Clima:
     def __init__(self, data, local):
         self.local = local
         url = f"https://nominatim.openstreetmap.org/search?q={local}&format=json"
@@ -14,13 +14,13 @@ class clima:
         self.humidity = [data['forecast']['forecastday'][i]['day']['avghumidity']+10 for i in range(5)]
 
 def setClima(endereco):
-    apikey = "0dd942d7fe8f4b65881115030253003"  # Sua chave de API
+    apikey = "8b2e562792014eb9806174425253003"  # Sua chave de API
     url = f"https://api.weatherapi.com/v1/forecast.json?key={apikey}&q={endereco}&days=6"
     response = requests.get(url)
 
     if response.status_code == 200:
         data = response.json()
-        newClima = clima(data, endereco)  # Cria o objeto clima com dados de previsão
+        newClima = Clima(data, endereco)  # Cria o objeto clima com dados de previsão
         return newClima
     else:
         return f"Erro: {response.status_code} - {response.json().get('error', {}).get('message', 'Erro desconhecido')}"
