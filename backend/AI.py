@@ -1,4 +1,5 @@
 import numpy as np
+import Clima
 
 class IA:
     def __init__(self, entradas, ocultas, saidas, taxa_aprendizado=0.01):
@@ -14,6 +15,7 @@ class IA:
         self.bias_saida = np.random.uniform(-0.5, 0.5, (saidas, 1))
     
     def sigmoid(self, x):
+        x = np.clip(x, -500, 500)
         return 1 / (1 + np.exp(-x))
     
     def dsigmoid(self, y):
@@ -44,9 +46,14 @@ class IA:
         self.pesos_ih += np.dot(gradiente_oculta, entrada.T)
         self.bias_oculta += gradiente_oculta
     
-    def prever(self, entrada):
-        entrada = np.array(entrada, ndmin=2).T
-        
+    def prever(self, endereco):
+        clima = Clima.setClima(endereco)
+
+        entrada = [clima.temp_min , clima.temp_max, clima.temp_apparent_min, clima.temp_apparent_max, clima.humidity_min, clima.humidity_max, clima.latitude , clima.longitude]
+
+        entrada = np.array(entrada, dtype=np.float32, ndmin=2).T
+        print(entrada)
+
         entrada_oculta = np.dot(self.pesos_ih, entrada) + self.bias_oculta
         saida_oculta = self.sigmoid(entrada_oculta)
         
@@ -100,7 +107,7 @@ class IA:
         self.bias_saida = np.array([float(x) for x in linhas[index].split()]).reshape(-1, 1)
 
 # Criando a Rede Neural
-# AI = IA(32, 10, 10, 0.1)
+AI = IA(32, 10, 10, 0.1)
 
 # # Listas para armazenar dados
 # inputVal = []
@@ -110,13 +117,13 @@ class IA:
 
 # # Carregamento dos Dados de Entrada
 # count = 0
-# with open("input2.txt", "r", encoding="utf-8") as arquivo:
+# with open("backend/Input2.txt", "r", encoding="utf-8") as arquivo:
 #     for linha in arquivo:
 #         valores = list(map(float, linha.strip().split()))
 #         if count < 750:
 #             inputVal.append(valores)
-#         else:
-#             inputTest.append(valores)
+#         # else:
+#         #     inputTest.append(valores)
 #         count += 1
  
 # # Carregamento dos Dados de Saída
@@ -157,7 +164,9 @@ class IA:
 # except:
 #     print("exit")
 
-# AI.carregar_pesos_bias("pesos.txt")
+AI.carregar_pesos_bias("backend/pesos.txt")
+
+print(AI.prever("Uberaba, Brasil"))
 
 # AI.guarda()
 
@@ -167,6 +176,7 @@ class IA:
 #         ina = int(input("Digite um índice para prever (-1 para sair): "))
 #         if ina == -1:
 #             break
+#         print(inputVal[ina])
 #         print("Saída prevista:", AI.prever(inputVal[ina]))
 #     except Exception as e:
 #         print("Erro:", e)

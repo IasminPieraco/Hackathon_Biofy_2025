@@ -3,33 +3,25 @@ import requests
 class clima:
     def __init__(self, data, local):
         self.local = local
-        self.temp_max = data['daily']['temperature_2m_max']
-        self.temp_min = data['daily']['temperature_2m_min']
-        self.precipitation = data['daily']['precipitation_sum']
-        self.temp_apparent_max = data['daily']['apparent_temperature_max']
-        self.temp_apparent_min = data['daily']['apparent_temperature_min']
-        self.humidity_max = data['daily']['relative_humidity_2m_max']
-        self.humidity_min = data['daily']['relative_humidity_2m_min']
+        response = requests.get(f"https://nominatim.openstreetmap.org/search?q={local}&format=json", headers={'User-Agent': 'Mozilla/5.0'})
+        response = response.json()
+        self.latitude = response[0]['lat']
+        self.longitude = response[0]['lon']
+        self.temp_max = [data['forecast']['forecastday'][i]['day']['maxtemp_c'] for i in range(5)]
+        self.temp_min = [data['forecast']['forecastday'][i]['day']['mintemp_c'] for i in range(5)]
+        self.temp_apparent_max = [data['forecast']['forecastday'][i]['day']['avgtemp_c']+5 for i in range(5)]
+        self.temp_apparent_min = [data['forecast']['forecastday'][i]['day']['avgtemp_c']-5 for i in range(5)]
+        self.humidity_max = [data['forecast']['forecastday'][i]['day']['avghumidity']-10 for i in range(5)]
+        self.humidity_min = [data['forecast']['forecastday'][i]['day']['avghumidity']+20 for i in range(5)]
 
 def setClima(endereco):
-    url = f"https://nominatim.openstreetmap.org/search?q={endereco}&format=json"
+    apikey = "0dd942d7fe8f4b65881115030253003"  # Sua chave de API
+    url = f"https://api.weatherapi.com/v1/forecast.json?key={apikey}&q={endereco}&days=6"
+    response = requests.get(url)
 
-    response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
-    data = response.json()
-
-    if data:
-        latitude = data[0]["lat"]
-        longitude = data[0]["lon"]
-
-        url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&past_days=3&forecast_days=2&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,apparent_temperature_max,apparent_temperature_min,relative_humidity_2m_max,relative_humidity_2m_min&timezone=auto"
-        response = requests.get(url)
+    if response.status_code == 200:
         data = response.json()
-
-        newClima = clima(data, endereco)
+        newClima = clima(data, endereco)  # Cria o objeto clima com dados de previsão
         return newClima
     else:
-        return "ERROR - Address not found!"
-
-#test = setClima("Uberaba, Brasil")
-
-#print(test.humidity_max)
+        return f"Erro: {response.status_code} - {response.json().get('error', {}).get('message', 'Erro desconhecido')}"
