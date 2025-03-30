@@ -78,10 +78,6 @@ flutter:
   assets:
     - assets/images/Logo.png
     - assets/images/placeholder.png
-    - assets/images/planta1.png
-    - assets/images/planta2.png
-    - assets/images/planta3.png
-    - assets/images/planta4.png
 
 
   # The following line ensures that the Material Icons font is
