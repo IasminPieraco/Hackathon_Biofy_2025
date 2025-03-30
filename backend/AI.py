@@ -49,10 +49,24 @@ class IA:
     def prever(self, endereco):
         clima = Clima.setClima(endereco)
 
-        entrada = [clima.temp_min , clima.temp_max, clima.temp_apparent_min, clima.temp_apparent_max, clima.humidity_min, clima.humidity_max, clima.latitude , clima.longitude]
+        entrada = [[clima.temp_min[0]], [clima.temp_min[1]], [clima.temp_min[2]], [clima.temp_min[3]], [clima.temp_min[4]], 
+                   [clima.temp_max[0]], [clima.temp_max[1]], [clima.temp_max[2]], [clima.temp_max[3]], [clima.temp_max[4]],
+                   [clima.humidity[0]], [clima.humidity[1]], [clima.humidity[2]], [clima.humidity[3]], [clima.humidity[4]],
+                   [clima.latitude] , [clima.longitude]]
+
+        entrada = np.array(entrada, dtype=np.float32, ndmin=2)
+
+        entrada_oculta = np.dot(self.pesos_ih, entrada) + self.bias_oculta
+        saida_oculta = self.sigmoid(entrada_oculta)
+        
+        entrada_saida = np.dot(self.pesos_ho, saida_oculta) + self.bias_saida
+        saida_final = self.sigmoid(entrada_saida)
+        
+        return saida_final.flatten()
+    
+    def preverTest(self, entrada):
 
         entrada = np.array(entrada, dtype=np.float32, ndmin=2).T
-        print(entrada)
 
         entrada_oculta = np.dot(self.pesos_ih, entrada) + self.bias_oculta
         saida_oculta = self.sigmoid(entrada_oculta)
@@ -107,76 +121,77 @@ class IA:
         self.bias_saida = np.array([float(x) for x in linhas[index].split()]).reshape(-1, 1)
 
 # Criando a Rede Neural
-AI = IA(32, 10, 10, 0.1)
+AI = IA(17, 10, 10, 0.1)
 
-# # Listas para armazenar dados
-# inputVal = []
-# outputVal = []
-# inputTest = []
-# outputTest = []
+# Listas para armazenar dados
+inputVal = []
+outputVal = []
+inputTest = []
+outputTest = []
 
-# # Carregamento dos Dados de Entrada
-# count = 0
-# with open("backend/Input2.txt", "r", encoding="utf-8") as arquivo:
-#     for linha in arquivo:
-#         valores = list(map(float, linha.strip().split()))
-#         if count < 750:
-#             inputVal.append(valores)
-#         # else:
-#         #     inputTest.append(valores)
-#         count += 1
+# Carregamento dos Dados de Entrada
+count = 0
+with open("InputFim.txt", "r", encoding="utf-8") as arquivo:
+    for linha in arquivo:
+        valores = list(map(float, linha.strip().split()))
+        if count < 1500:
+            inputVal.append(valores)
+        else:
+            inputTest.append(valores)
+        count += 1
  
-# # Carregamento dos Dados de Saída
-# count = 0
-# with open("output2.txt", "r", encoding="utf-8") as arquivo:
-#     for linha in arquivo:
-#         valores = list(map(float, linha.strip().split()))
-#         if count < 750:
-#             outputVal.append(valores)
-#         else:
-#             outputTest.append(valores)
-#         count += 1
+# Carregamento dos Dados de Saída
+count = 0
+with open("OutputFim.txt", "r", encoding="utf-8") as arquivo:
+    for linha in arquivo:
+        valores = list(map(float, linha.strip().split()))
+        if count < 1500:
+            outputVal.append(valores)
+        else:
+            outputTest.append(valores)
+        count += 1
 
-# # Normalização dos Dados (Opcional, mas recomendável)
-# inputVal = np.array(inputVal) / np.max(inputVal)
-# inputTest = np.array(inputTest) / np.max(inputTest)
+# Normalização dos Dados (Opcional, mas recomendável)
+inputVal = np.array(inputVal) / np.max(inputVal)
+inputTest = np.array(inputTest) / np.max(inputTest)
 
 # Loop de Treinamento até atingir 90% de acurácia
-# acc = 0
-# try:
-#     while acc < 1:
- 
-#         for i in range(len(inputVal)):
-#             AI.treinar(inputVal[i], outputVal[i])
 
-#         acc = 0
-#         count = 0
-#         for i in range(len(inputTest)):
-#             out = AI.prever(inputTest[i])
+acc = 0
+try:
+    while acc < 1:
 
-#             for j in range(10):
-#                 acc += 1 - np.abs(out[j] - outputTest[i][j])  # Corrigindo índice
+        for i in range(len(inputVal)):
+            AI.treinar(inputVal[i], outputVal[i])
+        acc = 0
+        count = 0
+        
+        for i in range(len(inputTest)):
+            out = AI.preverTest(inputTest[i])
 
-#             count += 1
+            for j in range(10):
+                acc += 1 - np.abs(out[j] - outputTest[i][j])  # Corrigindo índice
 
-#         acc /= count * 10  # Média da acurácia
-#         print(f"Acurácia: {acc:.4f}")
-# except:
-#     print("exit")
+            count += 1
 
-AI.carregar_pesos_bias("backend/pesos.txt")
+        acc /= count * 10  # Média da acurácia
+        print(f"Acurácia: {acc:.4f}")
+except:
+    print("exit")
 
-print(AI.prever("Uberaba, Brasil"))
+# AI.carregar_pesos_bias("backend/pesos.txt")
 
-# AI.guarda()
+# print(AI.prever("Uberaba, Brasil"))
+
+AI.guarda()
 
 # Teste Interativo
-# while True:
-#     try:
-#         ina = int(input("Digite um índice para prever (-1 para sair): "))
-#         if ina == -1:
-#             break
-#         print(inputVal[ina])
-#         print("Saída prevista:", AI.prever(inputVal[ina]))
-#     except Exception as e:
-#         print("Erro:", e)
+while True:
+    try:
+        ina = int(input("Digite um índice para prever (-1 para sair): "))
+        if ina == -1:
+            break
+        print(inputVal[ina])
+        print("Saída prevista:", AI.preverTest(inputVal[ina]))
+    except Exception as e:
+        print("Erro:", e)

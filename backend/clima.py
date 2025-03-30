@@ -3,16 +3,15 @@ import requests
 class clima:
     def __init__(self, data, local):
         self.local = local
-        response = requests.get(f"https://nominatim.openstreetmap.org/search?q={local}&format=json", headers={'User-Agent': 'Mozilla/5.0'})
-        response = response.json()
-        self.latitude = response[0]['lat']
-        self.longitude = response[0]['lon']
+        url = f"https://nominatim.openstreetmap.org/search?q={local}&format=json"
+
+        response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
+        data2 = response.json()
+        self.latitude = data2[0]["lat"]
+        self.longitude = data2[0]['lon']
         self.temp_max = [data['forecast']['forecastday'][i]['day']['maxtemp_c'] for i in range(5)]
         self.temp_min = [data['forecast']['forecastday'][i]['day']['mintemp_c'] for i in range(5)]
-        self.temp_apparent_max = [data['forecast']['forecastday'][i]['day']['avgtemp_c']+5 for i in range(5)]
-        self.temp_apparent_min = [data['forecast']['forecastday'][i]['day']['avgtemp_c']-5 for i in range(5)]
-        self.humidity_max = [data['forecast']['forecastday'][i]['day']['avghumidity']-10 for i in range(5)]
-        self.humidity_min = [data['forecast']['forecastday'][i]['day']['avghumidity']+20 for i in range(5)]
+        self.humidity = [data['forecast']['forecastday'][i]['day']['avghumidity']+10 for i in range(5)]
 
 def setClima(endereco):
     apikey = "0dd942d7fe8f4b65881115030253003"  # Sua chave de API
