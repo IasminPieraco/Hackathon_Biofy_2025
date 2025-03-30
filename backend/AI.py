@@ -121,77 +121,77 @@ class IA:
         self.bias_saida = np.array([float(x) for x in linhas[index].split()]).reshape(-1, 1)
 
 # Criando a Rede Neural
-AI = IA(17, 10, 10, 0.1)
+# AI = IA(17, 10, 10, 0.1)
 
-# Listas para armazenar dados
-inputVal = []
-outputVal = []
-inputTest = []
-outputTest = []
+# # Listas para armazenar dados
+# inputVal = []
+# outputVal = []
+# inputTest = []
+# outputTest = []
 
-# Carregamento dos Dados de Entrada
-count = 0
-with open("InputFim.txt", "r", encoding="utf-8") as arquivo:
-    for linha in arquivo:
-        valores = list(map(float, linha.strip().split()))
-        if count < 1500:
-            inputVal.append(valores)
-        else:
-            inputTest.append(valores)
-        count += 1
+# # Carregamento dos Dados de Entrada
+# count = 0
+# with open("InputFim.txt", "r", encoding="utf-8") as arquivo:
+#     for linha in arquivo:
+#         valores = list(map(float, linha.strip().split()))
+#         if count < 1500:
+#             inputVal.append(valores)
+#         else:
+#             inputTest.append(valores)
+#         count += 1
  
-# Carregamento dos Dados de Saída
-count = 0
-with open("OutputFim.txt", "r", encoding="utf-8") as arquivo:
-    for linha in arquivo:
-        valores = list(map(float, linha.strip().split()))
-        if count < 1500:
-            outputVal.append(valores)
-        else:
-            outputTest.append(valores)
-        count += 1
+# # Carregamento dos Dados de Saída
+# count = 0
+# with open("OutputFim.txt", "r", encoding="utf-8") as arquivo:
+#     for linha in arquivo:
+#         valores = list(map(float, linha.strip().split()))
+#         if count < 1500:
+#             outputVal.append(valores)
+#         else:
+#             outputTest.append(valores)
+#         count += 1
 
-# Normalização dos Dados (Opcional, mas recomendável)
-inputVal = np.array(inputVal) / np.max(inputVal)
-inputTest = np.array(inputTest) / np.max(inputTest)
+# # Normalização dos Dados (Opcional, mas recomendável)
+# inputVal = np.array(inputVal) / np.max(inputVal)
+# inputTest = np.array(inputTest) / np.max(inputTest)
 
-# Loop de Treinamento até atingir 90% de acurácia
+# # Loop de Treinamento até atingir 90% de acurácia
 
-acc = 0
-try:
-    while acc < 1:
+# acc = 0
+# try:
+#     while acc < 1:
 
-        for i in range(len(inputVal)):
-            AI.treinar(inputVal[i], outputVal[i])
-        acc = 0
-        count = 0
+#         for i in range(len(inputVal)):
+#             AI.treinar(inputVal[i], outputVal[i])
+#         acc = 0
+#         count = 0
         
-        for i in range(len(inputTest)):
-            out = AI.preverTest(inputTest[i])
+#         for i in range(len(inputTest)):
+#             out = AI.preverTest(inputTest[i])
 
-            for j in range(10):
-                acc += 1 - np.abs(out[j] - outputTest[i][j])  # Corrigindo índice
+#             for j in range(10):
+#                 acc += 1 - np.abs(out[j] - outputTest[i][j])  # Corrigindo índice
 
-            count += 1
+#             count += 1
 
-        acc /= count * 10  # Média da acurácia
-        print(f"Acurácia: {acc:.4f}")
-except:
-    print("exit")
+#         acc /= count * 10  # Média da acurácia
+#         print(f"Acurácia: {acc:.4f}")
+# except:
+#     print("exit")
 
-# AI.carregar_pesos_bias("backend/pesos.txt")
+# # AI.carregar_pesos_bias("backend/pesos.txt")
 
-# print(AI.prever("Uberaba, Brasil"))
+# # print(AI.prever("Uberaba, Brasil"))
 
-AI.guarda()
+# AI.guarda()
 
-# Teste Interativo
-while True:
-    try:
-        ina = int(input("Digite um índice para prever (-1 para sair): "))
-        if ina == -1:
-            break
-        print(inputVal[ina])
-        print("Saída prevista:", AI.preverTest(inputVal[ina]))
-    except Exception as e:
-        print("Erro:", e)
+# # Teste Interativo
+# while True:
+#     try:
+#         ina = int(input("Digite um índice para prever (-1 para sair): "))
+#         if ina == -1:
+#             break
+#         print(inputVal[ina])
+#         print("Saída prevista:", AI.preverTest(inputVal[ina]))
+#     except Exception as e:
+#         print("Erro:", e)
